@@ -60,4 +60,13 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    def material3_version = "1.0.1"
+    implementation "androidx.compose.material3:material3:$material3_version"
+
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha06"
+
+    // Dependencies for ViewModel and LifeCycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha02"
 }
