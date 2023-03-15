@@ -25,7 +25,8 @@ class MainViewModel : ViewModel(){
             BottomNavItem(
                 name = "INDLÆG",
                 route = "posts",
-                icon = Icons.Default.Menu
+                icon = Icons.Default.Menu,
+                badgeCount = 7
             ),
         )
         return navItems
