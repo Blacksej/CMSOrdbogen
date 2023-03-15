@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.FloatingActionButton
 import androidx.lifecycle.ViewModel
 import dev.danieltm.cmsordbogen.Models.BottomNavItem
 
