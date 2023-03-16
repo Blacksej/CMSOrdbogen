@@ -7,6 +7,10 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FloatingActionButton
 import androidx.lifecycle.ViewModel
 import dev.danieltm.cmsordbogen.Models.BottomNavItem
+import dev.danieltm.cmsordbogen.Models.PostModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MainViewModel : ViewModel(){
 
@@ -31,5 +35,157 @@ class MainViewModel : ViewModel(){
             ),
         )
         return navItems
+    }
+
+    fun getPostsTemp() : List<PostModel>
+    {
+        var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        var posts = listOf(
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Ny ordbog",
+                body = "Der er en ny ordbog ude lige nu, tjek den ud",
+                type = "Nyhed",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Nyt event",
+                body = "Vi spiser pizza og kører gokart",
+                type = "Event",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+            PostModel(
+                name = "Møde med partner",
+                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
+                type = "Annoncering",
+                image = null,
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2)
+            ),
+        )
+        return posts
     }
 }

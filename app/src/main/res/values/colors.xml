@@ -21,4 +21,5 @@
     // Top bar colors
     <color name="top_bar_bg">#00937B</color>
     <color name="top_bar_bg2">#006252</color>
+    <color name="top_cms_text">#FFFFFFFF</color>
 </resources>
