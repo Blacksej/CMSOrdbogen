@@ -22,4 +22,8 @@
     <color name="top_bar_bg">#00937B</color>
     <color name="top_bar_bg2">#006252</color>
     <color name="top_cms_text">#FFFFFFFF</color>
+
+    // Swiperefresh colors
+    <color name="refresh_bg">#FFFFFFFF</color>
+    <color name="refresh_content_color">#00937B</color>
 </resources>

@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -34,6 +36,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.danieltm.cmsordbogen.Models.BottomNavItem
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
@@ -49,6 +55,10 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             CMSOrdbogenTheme {
+
+                val isLoading by mainViewModel.isLoading.collectAsState()
+                val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
                 Scaffold(
                     topBar = {
                         TopBar(navController = navController)
@@ -72,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { paddingValues ->
                     Modifier.padding(paddingValues)
-                    Navigation(navController = navController, mainViewModel)
+                    Navigation(navController = navController, mainViewModel, swipeRefreshState = swipeRefreshState)
                 }
             }
         }
@@ -80,11 +90,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(navController: NavHostController, mainViewModel: MainViewModel) {
+fun Navigation(navController: NavHostController, mainViewModel: MainViewModel, swipeRefreshState: SwipeRefreshState) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             // REPRESENTS HOME SCREEN
-            HomeScreen(mainViewModel.getPostsTemp())
+            HomeScreen(mainViewModel.getPostsTemp(), mainViewModel, swipeRefreshState)
         }
         composable("create") {
             // REPRESENTS CREATE SCREEN
@@ -241,7 +251,7 @@ fun ListItem(item: PostModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(posts: List<PostModel>) {
+fun HomeScreen(posts: List<PostModel>, mainViewModel: MainViewModel, swipeRefreshState: SwipeRefreshState) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -271,24 +281,38 @@ fun HomeScreen(posts: List<PostModel>) {
                 .padding(top = 10.dp),
             contentAlignment = Alignment.Center
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                val grouped = posts.groupBy { it.type }
-                grouped.forEach { type, posts ->
-                    stickyHeader {
-                        Text(
-                            text = type.toString().uppercase(),
-                            modifier = Modifier
-                                .background(color = colorResource(id = R.color.background_home))
-                                .height(30.dp)
-                                .fillMaxWidth()
-                                .padding(start = 8.dp)
-                                .offset(y = (-6).dp),
-                            fontSize = 18.sp,
-                            color = Color.Black
-                        )
-                    }
-                    items(posts) { post ->
-                        ListItem(item = post)
+            // Acts as refresh for the list
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = mainViewModel::loadRecentPosts,
+                indicator = { state, refreshTrigger -> 
+                    SwipeRefreshIndicator(
+                        state = state, 
+                        refreshTriggerDistance = refreshTrigger,
+                        backgroundColor = colorResource(id = R.color.refresh_bg),
+                        contentColor = colorResource(id = R.color.refresh_content_color)
+                    )
+                }
+            ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    val grouped = posts.groupBy { it.type }
+                    grouped.forEach { (type, posts) ->
+                        stickyHeader {
+                            Text(
+                                text = type.toString().uppercase(),
+                                modifier = Modifier
+                                    .background(color = colorResource(id = R.color.background_home))
+                                    .height(30.dp)
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp)
+                                    .offset(y = (-6).dp),
+                                fontSize = 18.sp,
+                                color = Color.Black
+                            )
+                        }
+                        items(posts) { post ->
+                            ListItem(item = post)
+                        }
                     }
                 }
             }

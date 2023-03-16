@@ -6,13 +6,36 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FloatingActionButton
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.danieltm.cmsordbogen.Models.BottomNavItem
 import dev.danieltm.cmsordbogen.Models.PostModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MainViewModel : ViewModel(){
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    init {
+        loadRecentPosts()
+    }
+
+    fun loadRecentPosts(){
+        // Simulate delay for loading
+        viewModelScope.launch {
+            _isLoading.value = true
+            delay(1000L)
+            _isLoading.value = false
+        }
+
+        getPostsTemp()
+    }
 
     fun getNavList() : List<BottomNavItem>
     {
