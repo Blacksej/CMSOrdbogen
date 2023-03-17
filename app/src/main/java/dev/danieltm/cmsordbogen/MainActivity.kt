@@ -113,37 +113,3 @@ fun ScaffoldBottomNavigationBarAndTopBar(
         )
     }
 }
-
-@Composable
-fun PostItem(item: PostModel) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-            .height(120.dp)
-            .background(color = colorResource(id = R.color.top_bar_bg2))
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ordbogen_line_white_400px),
-                contentDescription = "user icon",
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .align(CenterVertically)
-                    .size(200.dp)
-            )
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(CenterVertically),
-                text = item.name,
-                color = Color.White,
-                fontSize = 16.sp
-            )
-        }
-    }
-}

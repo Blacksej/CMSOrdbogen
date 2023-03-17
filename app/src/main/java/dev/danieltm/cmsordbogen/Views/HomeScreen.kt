@@ -20,7 +20,6 @@ import dev.danieltm.cmsordbogen.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
-import dev.danieltm.cmsordbogen.PostItem
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
 
