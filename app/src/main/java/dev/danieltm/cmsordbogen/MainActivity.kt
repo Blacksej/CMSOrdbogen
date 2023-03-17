@@ -48,9 +48,9 @@ class MainActivity : ComponentActivity() {
                     navHostController = navController,
                     swipeRefreshState = swipeRefreshState
                 )
+            }
         }
     }
-}
 }
 
 @Composable
@@ -85,7 +85,7 @@ fun ScaffoldBottomNavigationBarAndTopBar(
 
     Scaffold(
         topBar = {
-                 TopBar(navController = navController)
+            TopBar(navController = navController)
         },
         bottomBar = {
             BottomNavigationBar(
