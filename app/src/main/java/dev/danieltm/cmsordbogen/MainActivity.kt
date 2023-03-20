@@ -3,19 +3,13 @@ package dev.danieltm.cmsordbogen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -24,7 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.danieltm.cmsordbogen.Models.PostModel
+import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
 import dev.danieltm.cmsordbogen.Views.*
 import dev.danieltm.cmsordbogen.ui.theme.CMSOrdbogenTheme
@@ -37,6 +31,7 @@ class MainActivity : ComponentActivity() {
             CMSOrdbogenTheme {
 
                 val mainViewModel = viewModel<MainViewModel>()
+                val createPostViewModel = viewModel<CreatePostViewModel>()
                 val navController = rememberNavController()
 
                 val isLoading by mainViewModel.isLoading.collectAsState()
@@ -44,6 +39,7 @@ class MainActivity : ComponentActivity() {
 
                 ScaffoldBottomNavigationBarAndTopBar(
                     mainViewModel = mainViewModel,
+                    createPostViewModel = createPostViewModel,
                     navController = navController,
                     navHostController = navController,
                     swipeRefreshState = swipeRefreshState
@@ -57,20 +53,21 @@ class MainActivity : ComponentActivity() {
 fun Navigation(
     navController: NavHostController,
     mainViewModel: MainViewModel,
+    createPostViewModel: CreatePostViewModel,
     swipeRefreshState: SwipeRefreshState
 ) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             // REPRESENTS HOME SCREEN
-            HomeScreen(mainViewModel.getPostsTemp(), mainViewModel, swipeRefreshState)
+            HomeScreen(mainViewModel, swipeRefreshState)
         }
         composable("create") {
             // REPRESENTS CREATE SCREEN
-            CreateScreen()
+            CreateScreen(createPostViewModel)
         }
         composable("posts") {
             // REPRESENTS POSTS SCREEN
-            PostsScreen()
+            PostsScreen(mainViewModel, swipeRefreshState)
         }
     }
 }
@@ -78,6 +75,7 @@ fun Navigation(
 @Composable
 fun ScaffoldBottomNavigationBarAndTopBar(
     mainViewModel: MainViewModel,
+    createPostViewModel: CreatePostViewModel,
     navController: NavController,
     navHostController: NavHostController,
     swipeRefreshState: SwipeRefreshState
@@ -109,6 +107,7 @@ fun ScaffoldBottomNavigationBarAndTopBar(
         Navigation(
             navController = navHostController,
             mainViewModel,
+            createPostViewModel,
             swipeRefreshState = swipeRefreshState
         )
     }
