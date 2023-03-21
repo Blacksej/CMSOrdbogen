@@ -4,5 +4,6 @@ public enum PostType {
     NEWS,
     ANNOUNCEMENT,
     PUSH,
-    EVENT
+    EVENT,
+    NOT_PICKED
 }

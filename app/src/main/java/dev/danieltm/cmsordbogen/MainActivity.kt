@@ -24,6 +24,7 @@ import dev.danieltm.cmsordbogen.Views.*
 import dev.danieltm.cmsordbogen.ui.theme.CMSOrdbogenTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,7 +81,6 @@ fun ScaffoldBottomNavigationBarAndTopBar(
     navHostController: NavHostController,
     swipeRefreshState: SwipeRefreshState
 ) {
-
     Scaffold(
         topBar = {
             TopBar(navController = navController)

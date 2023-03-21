@@ -1,5 +1,6 @@
 package dev.danieltm.cmsordbogen.Models.Repositories
 
+import android.net.Uri
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.IPostRepository
 import java.time.LocalDate
@@ -14,7 +15,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -22,7 +24,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -30,7 +33,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -38,7 +42,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -46,7 +51,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -54,7 +60,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -62,7 +69,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog JAA",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -70,7 +78,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -78,7 +87,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -86,7 +96,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -94,7 +105,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -102,7 +114,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -110,7 +123,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -118,7 +132,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -126,7 +141,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -134,7 +150,8 @@ class PostRepository : IPostRepository {
                 name = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "Nyhed",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -142,7 +159,8 @@ class PostRepository : IPostRepository {
                 name = "Nyt event",
                 body = "Vi spiser pizza og kører gokart",
                 type = "Event",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
@@ -150,7 +168,8 @@ class PostRepository : IPostRepository {
                 name = "Møde med partner",
                 body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
                 type = "Annoncering",
-                image = null,
+                uri = null,
+                uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2)
             ),
