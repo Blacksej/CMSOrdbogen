@@ -12,167 +12,182 @@ class PostRepository : IPostRepository {
         var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
-                name = "Ny ordbog",
+                title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                type = "NYHED",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Ny ordbog",
+                title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                type = "NYHED",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Ny ordbog JAA",
+                title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                type = "NYHED",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
-                uris = emptyList<Uri>(),
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
-            ),
-            PostModel(
-                name = "Ny ordbog",
+                title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                type = "NYHED",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
+                title = "Gokart med gutterne",
+                body = "Vi kører gokart, jaaaaaa",
+                type = "EVENT",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
+                title = "Gokart med gutterne",
+                body = "Vi kører gokart, jaaaaaa",
+                type = "EVENT",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Ny ordbog",
-                body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                title = "Gokart med gutterne",
+                body = "Vi kører gokart, jaaaaaa",
+                type = "EVENT",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
+                title = "Gokart med gutterne",
+                body = "Vi kører gokart, jaaaaaa",
+                type = "EVENT",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
+                title = "Der er vedligeholdelse på siden snart",
+                body = "Siden vil være nede lidt",
+                type = "ANNONCERING",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Ny ordbog",
-                body = "Der er en ny ordbog ude lige nu, tjek den ud",
-                type = "Nyhed",
-                uri = null,
+                title = "Der er vedligeholdelse på siden snart",
+                body = "Siden vil være nede lidt",
+                type = "ANNONCERING",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Nyt event",
-                body = "Vi spiser pizza og kører gokart",
-                type = "Event",
-                uri = null,
+                title = "Der er vedligeholdelse på siden snart",
+                body = "Siden vil være nede lidt",
+                type = "ANNONCERING",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
             PostModel(
-                name = "Møde med partner",
-                body = "Vores partner kommer på besøg, og derfor skal der holdes møde",
-                type = "Annoncering",
-                uri = null,
+                title = "Abonner på vores nyhedsbrev",
+                body = "Klik her for at abonnere",
+                type = "PUSH",
+                site = emptyList<String>(),
+                author = "Daniel",
                 uris = emptyList<Uri>(),
                 startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2)
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
             ),
+            PostModel(
+                title = "Abonner på vores nyhedsbrev",
+                body = "Klik her for at abonnere",
+                type = "PUSH",
+                site = emptyList<String>(),
+                author = "Daniel",
+                uris = emptyList<Uri>(),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
+            ),
+            PostModel(
+                title = "Abonner på vores nyhedsbrev",
+                body = "Klik her for at abonnere",
+                type = "PUSH",
+                site = emptyList<String>(),
+                author = "Daniel",
+                uris = emptyList<Uri>(),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
+            ),
+            PostModel(
+                title = "Abonner på vores nyhedsbrev",
+                body = "Klik her for at abonnere",
+                type = "PUSH",
+                site = emptyList<String>(),
+                author = "Daniel",
+                uris = emptyList<Uri>(),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
+            ),
+            PostModel(
+                title = "Abonner på vores nyhedsbrev",
+                body = "Klik her for at abonnere",
+                type = "PUSH",
+                site = emptyList<String>(),
+                author = "Daniel",
+                uris = emptyList<Uri>(),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now().plusDays(2),
+                creationTime = LocalDate.now()
+            ),
+
         )
         return posts
     }
@@ -181,7 +196,10 @@ class PostRepository : IPostRepository {
         TODO("Not yet implemented")
     }
 
-    override fun createPost() {
+    override fun createNewsPost(type: String, title: String, body: String,
+                                startDate: LocalDate, endDate: LocalDate,
+                                creationDate: LocalDate, author: String)
+    {
         TODO("Not yet implemented")
     }
 

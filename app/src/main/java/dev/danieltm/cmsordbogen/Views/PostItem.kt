@@ -41,7 +41,7 @@ fun PostItem(item: PostModel) {
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .align(Alignment.CenterVertically),
-                text = item.name,
+                text = item.title,
                 color = Color.White,
                 fontSize = 16.sp
             )

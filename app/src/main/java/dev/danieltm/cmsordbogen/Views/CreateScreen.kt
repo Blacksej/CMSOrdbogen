@@ -1,5 +1,8 @@
 package dev.danieltm.cmsordbogen.Views
 
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
+import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -42,8 +46,11 @@ import androidx.compose.ui.unit.toSize
 import coil.compose.AsyncImage
 import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.utilities.PostType
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
- // MAIN SCREEN
+// MAIN SCREEN
 @Composable
 fun CreateScreen(
     createPostViewModel: CreatePostViewModel
@@ -92,13 +99,13 @@ fun CreateScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Column {
-                if (createPostViewModel.postTypeState.value == PostType.NEWS) {
+                if (createPostViewModel.postTypeState.value == "NYHED") {
                     CreateNewsScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == PostType.PUSH) {
+                } else if (createPostViewModel.postTypeState.value == "PUSH") {
                     CreatePushScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == PostType.EVENT) {
+                } else if (createPostViewModel.postTypeState.value == "EVENT") {
                     CreateEventScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == PostType.ANNOUNCEMENT) {
+                } else if (createPostViewModel.postTypeState.value == "ANNONCERING") {
                     CreateAnnouncementScreen(createPostViewModel = createPostViewModel)
                 } else {
                     TypeNotPickedScreen()
@@ -108,17 +115,19 @@ fun CreateScreen(
     }
 }
 
-
-
  // SCREENS FOR THE SELECTED TYPE
 @Composable
 fun CreateNewsScreen(createPostViewModel: CreatePostViewModel) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         NameInputField(createPostViewModel = createPostViewModel)
+
+        BodyInputField(createPostViewModel = createPostViewModel)
+        
+        StartDatePicker(createPostViewModel = createPostViewModel)
         Text(
-            text = "News screen",
+            text = "Nyheds skærm",
             modifier = Modifier.padding(8.dp),
             color = colorResource(id = R.color.black)
         )
@@ -186,25 +195,30 @@ fun TypeNotPickedScreen() {
 }
 
 
-
 // REUSABLE COMPOSABLES
 @Composable
 fun DropDownTypeMenu(createPostViewModel: CreatePostViewModel) {
 
     var expanded by remember { mutableStateOf(false) }
 
-    var postTypeState: PostType by createPostViewModel.postTypeState
+    var postTypeState: String by createPostViewModel.postTypeState
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    var selectedType by remember { mutableStateOf("") }
+    var selectedType by remember { mutableStateOf(postTypeState) }
 
+    val danishTypesList: List<String>
+
+    // Creates a list of all the possible posttypes in a list
     val postTypes = listOf(
         PostType.NEWS,
         PostType.EVENT,
         PostType.PUSH,
         PostType.ANNOUNCEMENT
     )
+
+    // Converts the enums above to the danish equivalent
+    danishTypesList = createPostViewModel.convertEnumsToDanish(postTypes)
 
     val icon = if (expanded) {
         Icons.Filled.KeyboardArrowUp
@@ -264,13 +278,13 @@ fun DropDownTypeMenu(createPostViewModel: CreatePostViewModel) {
                         .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
                         .background(colorResource(id = R.color.top_bar_bg))
                 ) {
-                    postTypes.forEach { label ->
+                    danishTypesList.forEach { label ->
                         DropdownMenuItem(onClick = {
-                            selectedType = label.toString()
+                            selectedType = label
                             expanded = false
                             postTypeState = label
                         }) {
-                            Text(text = label.toString(), color = Color.White)
+                            Text(text = label, color = Color.White)
                         }
                     }
                 }
@@ -283,7 +297,7 @@ fun DropDownTypeMenu(createPostViewModel: CreatePostViewModel) {
 @Composable
 fun NameInputField(createPostViewModel: CreatePostViewModel) {
 
-    var nameTextState: String by createPostViewModel.nameTextState
+    var titleTextState: String by createPostViewModel.titleTextState
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -306,8 +320,8 @@ fun NameInputField(createPostViewModel: CreatePostViewModel) {
     ) {
         Column() {
             TextField(
-                value = nameTextState,
-                onValueChange = { nameTextState = it },
+                value = titleTextState,
+                onValueChange = { titleTextState = it },
                 textStyle = TextStyle(
                     fontSize = 18.sp
                 ),
@@ -316,7 +330,7 @@ fun NameInputField(createPostViewModel: CreatePostViewModel) {
                     cursorColor = Color.White,
                     backgroundColor = Color.Transparent
                 ),
-                label = { Text(text = "Navn") },
+                label = { Text(text = "Titel") },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -329,21 +343,150 @@ fun NameInputField(createPostViewModel: CreatePostViewModel) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun BodyInputField(createPostViewModel: CreatePostViewModel) {
+
+    var bodyTextState: String by createPostViewModel.bodyTextState
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        colorResource(id = R.color.top_bar_bg),
+                        colorResource(id = R.color.top_bar_bg2)
+                    ),
+                    start = Offset(0f, Float.POSITIVE_INFINITY),
+                    end = Offset(Float.POSITIVE_INFINITY, 0f)
+                )
+            ),
+    ) {
+        Column() {
+            TextField(
+                value = bodyTextState,
+                onValueChange = { bodyTextState = it },
+                textStyle = TextStyle(
+                    fontSize = 18.sp
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = Color.White,
+                    cursorColor = Color.White,
+                    backgroundColor = Color.Transparent
+                ),
+                label = { Text(text = "Indhold") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                )
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
+
+    // Fetching the Local Context
+    val context = LocalContext.current
+
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    var startDate by remember { mutableStateOf(createPostViewModel.postStartDateState) }
+
+    // Declaring integer values
+    // for year, month and day
+    val year: Int
+    val month: Int
+    val day: Int
+
+    // Initializing a Calendar
+    val calendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    calendar.time = Date()
+
+    // Declaring a string value to
+    // store date in string format
+    val date = remember { mutableStateOf("") }
+
+    // Declaring DatePickerDialog and setting
+    // initial values as current values (present year, month and day)
+    val datePickerDialog = DatePickerDialog(
+        context,
+        {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+
+            date.value = String.format("%02d/%02d/%d", dayOfMonth, month+1, year)
+            startDate.value = LocalDate.parse(date.value, formatter)
+                // "$dayOfMonth/${month+1}/$year"
+        }, year, month, day
+    )
+
+    var bodyTextState: String by createPostViewModel.bodyTextState
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        colorResource(id = R.color.top_bar_bg),
+                        colorResource(id = R.color.top_bar_bg2)
+                    ),
+                    start = Offset(0f, Float.POSITIVE_INFINITY),
+                    end = Offset(Float.POSITIVE_INFINITY, 0f)
+                )
+            ),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Creating a button that on
+            // click displays/shows the DatePickerDialog
+            Button(onClick = {
+                datePickerDialog.show()
+            }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            ) {
+                Text(text = "Vælg start dato")
+            }
+            Text(
+                fontSize = 18.sp,
+                text = "START DATO: ${startDate.value}",
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .offset(x = 0.dp, y = (-6).dp),
+            )
+        }
+    }
+}
+
 @Composable
 fun ImagePicker(createPostViewModel: CreatePostViewModel) {
-
-    var selectedImageUri by remember {
-        mutableStateOf(createPostViewModel.imageUri)
-    }
 
     var selectedImageUris by remember {
         mutableStateOf(createPostViewModel.imageUris)
     }
-
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImageUri.value = uri }
-    )
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
@@ -357,18 +500,8 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg2))
-                ) {
-                    Text(text = "Vælg et foto", color = Color.White)
-                }
                 Button(
                     onClick = {
                         multiplePhotoPickerLauncher.launch(
@@ -377,17 +510,9 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg2))
                 ) {
-                    Text(text = "Vælg flere fotos", color = Color.White)
+                    Text(text = "Vælg foto(s)", color = Color.White)
                 }
             }
-        }
-        item {
-            AsyncImage(
-                model = selectedImageUri.value,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
         }
 
         items(selectedImageUris.value) { uri ->

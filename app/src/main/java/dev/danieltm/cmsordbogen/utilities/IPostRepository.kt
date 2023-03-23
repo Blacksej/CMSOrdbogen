@@ -1,6 +1,7 @@
 package dev.danieltm.cmsordbogen.utilities
 
 import dev.danieltm.cmsordbogen.Models.PostModel
+import java.time.LocalDate
 
 interface IPostRepository {
 
@@ -8,7 +9,9 @@ interface IPostRepository {
 
     fun getRecentPosts() : List<PostModel>
 
-    fun createPost()
+    fun createNewsPost(type: String, title: String, body: String,
+                       startDate: LocalDate, endDate: LocalDate,
+                       creationDate: LocalDate, author: String)
 
     fun updatePost()
 }

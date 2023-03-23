@@ -4,11 +4,13 @@ import android.net.Uri
 import java.time.LocalDate
 
 data class PostModel(
-    val name: String,
+    val title: String,
     val body: String,
     val type: String,
-    val uri: Uri?,
+    val site: List<String>,
+    val author: String,
     val uris: List<Uri?>,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val creationTime: LocalDate
 )
