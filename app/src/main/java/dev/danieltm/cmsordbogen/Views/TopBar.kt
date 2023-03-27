@@ -52,7 +52,7 @@ fun TopBar(navController: NavController){
             }
         },
         modifier = Modifier
-            .height(80.dp)
+            .height(60.dp)
             .background(
                 Brush.linearGradient(
                     colors = listOf(

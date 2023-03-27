@@ -4,7 +4,10 @@ import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.PostType
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
 class CreatePostViewModel : ViewModel() {
@@ -12,7 +15,11 @@ class CreatePostViewModel : ViewModel() {
     val titleTextState: MutableState<String> = mutableStateOf("")
     val bodyTextState: MutableState<String> = mutableStateOf("")
     val postTypeState: MutableState<String> = mutableStateOf("IKKE VALGT")
-    val authorState: MutableState<String> = mutableStateOf("")
+
+    val sitesState = mutableListOf<String>()
+    val tempDisplaySiteState: MutableState<String> = mutableStateOf("IKKE VALGT")
+
+    val authorState: MutableState<String> = mutableStateOf("Daniel")
     val imageUris: MutableState<List<Uri?>> = mutableStateOf(emptyList())
     val postStartDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val postEndDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())

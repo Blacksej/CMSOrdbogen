@@ -9,12 +9,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -71,7 +74,9 @@ fun CreateScreen(
             )
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(70.dp)
         ) {
             Text(
                 modifier = Modifier
@@ -98,7 +103,7 @@ fun CreateScreen(
                 },
             contentAlignment = Alignment.TopCenter
         ) {
-            Column {
+            Column{
                 if (createPostViewModel.postTypeState.value == "NYHED") {
                     CreateNewsScreen(createPostViewModel = createPostViewModel)
                 } else if (createPostViewModel.postTypeState.value == "PUSH") {
@@ -115,17 +120,23 @@ fun CreateScreen(
     }
 }
 
- // SCREENS FOR THE SELECTED TYPE
+// SCREENS FOR THE SELECTED TYPE
 @Composable
 fun CreateNewsScreen(createPostViewModel: CreatePostViewModel) {
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         NameInputField(createPostViewModel = createPostViewModel)
 
         BodyInputField(createPostViewModel = createPostViewModel)
-        
+
         StartDatePicker(createPostViewModel = createPostViewModel)
+        EndDatePicker(createPostViewModel = createPostViewModel)
+
+        DropDownSiteMenu(createPostViewModel = createPostViewModel)
+
         Text(
             text = "Nyheds skærm",
             modifier = Modifier.padding(8.dp),
@@ -179,8 +190,7 @@ fun CreatePushScreen(createPostViewModel: CreatePostViewModel) {
 }
 
 
-
- // SCREEN IF NO TYPE IS PICKED
+// SCREEN IF NO TYPE IS PICKED
 @Composable
 fun TypeNotPickedScreen() {
     Column(
@@ -293,6 +303,119 @@ fun DropDownTypeMenu(createPostViewModel: CreatePostViewModel) {
     }
 }
 
+@Composable
+fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    var sitesList = remember {
+        createPostViewModel.sitesState.toMutableStateList()
+    }
+
+    //var tempDisplaySite: String by createPostViewModel.tempDisplaySiteState
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    //var selectedSite by remember { mutableStateOf("VÆLG SIDE(R)") }
+
+    val listOfPossibleSites = listOf<String>(
+        "Ordbogen.com",
+        "ABC.Ordbogen.com",
+        "Grammatip.com"
+    )
+
+    val icon = if (expanded) {
+        Icons.Filled.KeyboardArrowUp
+    } else {
+        Icons.Filled.KeyboardArrowDown
+    }
+    Column(modifier = Modifier.padding(8.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(8.dp))
+                .background(colorResource(id = R.color.top_bar_bg))
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            colorResource(id = R.color.top_bar_bg),
+                            colorResource(id = R.color.top_bar_bg2)
+                        ),
+                        start = Offset(0f, Float.POSITIVE_INFINITY),
+                        end = Offset(Float.POSITIVE_INFINITY, 0f)
+                    )
+                )
+        ) {
+            Column() {
+                TextField(
+                    value = "Vælg side/sider",
+                    onValueChange = { },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape = RoundedCornerShape(8.dp))
+                        .onGloballyPositioned { coordinates ->
+                            // This value is used to assign to
+                            // the DropDown the same width
+                            textFieldSize = coordinates.size.toSize()
+                        }
+                        .clickable { expanded = !expanded }
+                        .height(55.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.White,
+                        cursorColor = Color.White,
+                        backgroundColor = Color.Transparent
+                    ),
+                    enabled = false,
+                    textStyle = TextStyle(
+                        fontSize = 16.sp
+                    ),
+                    //label = { Text("Vælg side(r)") },
+                    trailingIcon = {
+                        Icon(icon, "contentDescription",
+                            Modifier.clickable { expanded = !expanded })
+                    },
+                )
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .background(colorResource(id = R.color.top_bar_bg))
+                ) {
+                    listOfPossibleSites.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            expanded = false
+                            // Checks if the list already contains the site.
+                            // Makes sure we don't get a duplicate of a site.
+                            if (!sitesList.contains(label)) {
+                                sitesList.add(label)
+                            }
+                        }) {
+                            Text(text = label, color = Color.White)
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                sitesList.forEach { site ->
+                        Text(
+                            text = site,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clickable(onClick = { sitesList.remove(site) }),
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NameInputField(createPostViewModel: CreatePostViewModel) {
@@ -368,7 +491,10 @@ fun BodyInputField(createPostViewModel: CreatePostViewModel) {
                 )
             ),
     ) {
-        Column() {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
             TextField(
                 value = bodyTextState,
                 onValueChange = { bodyTextState = it },
@@ -427,11 +553,11 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
     // initial values as current values (present year, month and day)
     val datePickerDialog = DatePickerDialog(
         context,
-        {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
 
-            date.value = String.format("%02d/%02d/%d", dayOfMonth, month+1, year)
+            date.value = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
             startDate.value = LocalDate.parse(date.value, formatter)
-                // "$dayOfMonth/${month+1}/$year"
+            // "$dayOfMonth/${month+1}/$year"
         }, year, month, day
     )
 
@@ -456,26 +582,115 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
                 )
             ),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Creating a button that on
             // click displays/shows the DatePickerDialog
-            Button(onClick = {
-                datePickerDialog.show()
-            }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            Button(
+                onClick = {
+                    datePickerDialog.show()
+                }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                modifier = Modifier
+                    .padding(start = 8.dp)
             ) {
                 Text(text = "Vælg start dato")
             }
             Text(
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 text = "START DATO: ${startDate.value}",
                 modifier = Modifier
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
+
+    // Fetching the Local Context
+    val context = LocalContext.current
+
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    var endDate by remember { mutableStateOf(createPostViewModel.postEndDateState) }
+
+    // Declaring integer values
+    // for year, month and day
+    val year: Int
+    val month: Int
+    val day: Int
+
+    // Initializing a Calendar
+    val calendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    calendar.time = Date()
+
+    // Declaring a string value to
+    // store date in string format
+    val date = remember { mutableStateOf("") }
+
+    // Declaring DatePickerDialog and setting
+    // initial values as current values (present year, month and day)
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+
+            date.value = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
+            endDate.value = LocalDate.parse(date.value, formatter)
+            // "$dayOfMonth/${month+1}/$year"
+        }, year, month, day
+    )
+
+    var bodyTextState: String by createPostViewModel.bodyTextState
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        colorResource(id = R.color.top_bar_bg),
+                        colorResource(id = R.color.top_bar_bg2)
+                    ),
+                    start = Offset(0f, Float.POSITIVE_INFINITY),
+                    end = Offset(Float.POSITIVE_INFINITY, 0f)
+                )
+            ),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Creating a button that on
+            // click displays/shows the DatePickerDialog
+            Button(
+                onClick = {
+                    datePickerDialog.show()
+                }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                modifier = Modifier
                     .padding(start = 8.dp)
-                    .offset(x = 0.dp, y = (-6).dp),
+            ) {
+                Text(text = "Vælg slut dato")
+            }
+            Text(
+                fontSize = 16.sp,
+                text = "SLUT DATO: ${endDate.value}",
+                modifier = Modifier
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
             )
         }
     }

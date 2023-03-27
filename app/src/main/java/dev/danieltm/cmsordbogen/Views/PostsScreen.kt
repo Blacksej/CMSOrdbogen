@@ -31,7 +31,7 @@ fun PostsScreen(
     swipeRefreshState: SwipeRefreshState
 ) {
     val postsList by mainViewModel.allPostsList.collectAsState()
-    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
