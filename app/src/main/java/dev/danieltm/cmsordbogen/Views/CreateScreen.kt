@@ -453,7 +453,7 @@ fun NameInputField(createPostViewModel: CreatePostViewModel) {
                     cursorColor = Color.White,
                     backgroundColor = Color.Transparent
                 ),
-                label = { Text(text = "Titel") },
+                label = { Text(text = "Titel", color = Color.White) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -506,7 +506,7 @@ fun BodyInputField(createPostViewModel: CreatePostViewModel) {
                     cursorColor = Color.White,
                     backgroundColor = Color.Transparent
                 ),
-                label = { Text(text = "Indhold") },
+                label = { Text(text = "Indhold", color = Color.White) },
                 modifier = Modifier
                     .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -594,14 +594,15 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
                 modifier = Modifier
                     .padding(start = 8.dp)
             ) {
-                Text(text = "Vælg start dato")
+                Text(text = "Vælg start dato", color = Color.White)
             }
             Text(
                 fontSize = 16.sp,
                 text = "START DATO: ${startDate.value}",
                 modifier = Modifier
                     .padding(8.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White
             )
         }
     }
@@ -683,14 +684,15 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
                 modifier = Modifier
                     .padding(start = 8.dp)
             ) {
-                Text(text = "Vælg slut dato")
+                Text(text = "Vælg slut dato", color = Color.White)
             }
             Text(
                 fontSize = 16.sp,
                 text = "SLUT DATO: ${endDate.value}",
                 modifier = Modifier
                     .padding(8.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White
             )
         }
     }
