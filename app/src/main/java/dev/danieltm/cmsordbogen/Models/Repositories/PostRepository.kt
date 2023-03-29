@@ -3,12 +3,20 @@ package dev.danieltm.cmsordbogen.Models.Repositories
 import android.net.Uri
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.IPostRepository
+import dev.danieltm.cmsordbogen.utilities.PostsService
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class PostRepository : IPostRepository {
+class PostRepository(
+    //Dependency injection
+    private val client: HttpClient
+) : PostsService{
 
-    override fun getAllPosts(): List<PostModel> {
+    suspend fun getAllPosts(): List<PostModel> {
         var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
@@ -192,18 +200,26 @@ class PostRepository : IPostRepository {
         return posts
     }
 
-    override fun getRecentPosts() : List<PostModel> {
+    fun getRecentPosts() : List<PostModel> {
         TODO("Not yet implemented")
     }
 
-    override fun createNewsPost(type: String, title: String, body: String,
+    suspend fun createNewsPost(type: String, title: String, body: String,
                                 startDate: LocalDate, endDate: LocalDate,
                                 creationDate: LocalDate, author: String)
     {
-        TODO("Not yet implemented")
+        val reponse: HttpResponse = client.post(""){
+            contentType(ContentType.Application.Json)
+            setBody(PostModel(title = title,
+                body = body,
+                startDate = startDate,
+                endDate = endDate,
+                creationTime = LocalDate.now(),
+                author = author))
+        }
     }
 
-    override fun updatePost() {
+    fun updatePost() {
         TODO("Not yet implemented")
     }
 
