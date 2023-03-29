@@ -14,9 +14,10 @@ import java.time.format.DateTimeFormatter
 class PostRepository(
     //Dependency injection
     private val client: HttpClient
-) : PostsService{
+) : PostsService
+{
 
-    suspend fun getAllPosts(): List<PostModel> {
+    override suspend fun getAllPosts(): List<PostModel> {
         var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
@@ -25,7 +26,7 @@ class PostRepository(
                 type = "NYHED",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -36,7 +37,7 @@ class PostRepository(
                 type = "NYHED",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -47,7 +48,7 @@ class PostRepository(
                 type = "NYHED",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -58,7 +59,7 @@ class PostRepository(
                 type = "NYHED",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -69,7 +70,7 @@ class PostRepository(
                 type = "EVENT",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -80,7 +81,7 @@ class PostRepository(
                 type = "EVENT",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -91,7 +92,7 @@ class PostRepository(
                 type = "EVENT",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -102,7 +103,7 @@ class PostRepository(
                 type = "EVENT",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -113,7 +114,7 @@ class PostRepository(
                 type = "ANNONCERING",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -124,7 +125,7 @@ class PostRepository(
                 type = "ANNONCERING",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -135,7 +136,7 @@ class PostRepository(
                 type = "ANNONCERING",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -146,7 +147,7 @@ class PostRepository(
                 type = "PUSH",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -157,7 +158,7 @@ class PostRepository(
                 type = "PUSH",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -168,7 +169,7 @@ class PostRepository(
                 type = "PUSH",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -179,7 +180,7 @@ class PostRepository(
                 type = "PUSH",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -190,7 +191,7 @@ class PostRepository(
                 type = "PUSH",
                 site = emptyList<String>(),
                 author = "Daniel",
-                uris = emptyList<Uri>(),
+                uri = null,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(2),
                 creationTime = LocalDate.now()
@@ -200,26 +201,20 @@ class PostRepository(
         return posts
     }
 
-    fun getRecentPosts() : List<PostModel> {
+    override suspend fun getRecentPosts() : List<PostModel> {
         TODO("Not yet implemented")
     }
 
-    suspend fun createNewsPost(type: String, title: String, body: String,
-                                startDate: LocalDate, endDate: LocalDate,
-                                creationDate: LocalDate, author: String)
+    override suspend fun createNewsPost(postModel: PostModel)
     {
         val reponse: HttpResponse = client.post(""){
             contentType(ContentType.Application.Json)
-            setBody(PostModel(title = title,
-                body = body,
-                startDate = startDate,
-                endDate = endDate,
-                creationTime = LocalDate.now(),
-                author = author))
+            setBody(postModel)
         }
+
     }
 
-    fun updatePost() {
+    override suspend fun updatePost(postModel: PostModel) {
         TODO("Not yet implemented")
     }
 

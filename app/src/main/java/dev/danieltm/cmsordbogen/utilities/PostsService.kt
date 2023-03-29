@@ -1,5 +1,6 @@
 package dev.danieltm.cmsordbogen.utilities
 
+import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.Models.Repositories.PostRepository
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
@@ -8,9 +9,10 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 interface PostsService {
-
-    //suspend fun getPosts(lat: String, long: String): PostRepository
-    //suspend fun getPostsFromSearch(city: String): WeatherModelResponse.Welcome
+    suspend fun getAllPosts() : List<PostModel>
+    suspend fun getRecentPosts() : List<PostModel>
+    suspend fun createNewsPost(postModel: PostModel)
+    suspend fun updatePost(postModel: PostModel)
 
     companion object{
         fun create() : PostsService{

@@ -6,11 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.PostType
+import dev.danieltm.cmsordbogen.utilities.PostsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
 class CreatePostViewModel : ViewModel() {
+
+    var postsService = PostsService.create()
 
     val titleTextState: MutableState<String> = mutableStateOf("")
     val bodyTextState: MutableState<String> = mutableStateOf("")
@@ -20,14 +23,28 @@ class CreatePostViewModel : ViewModel() {
     val tempDisplaySiteState: MutableState<String> = mutableStateOf("IKKE VALGT")
 
     val authorState: MutableState<String> = mutableStateOf("Daniel")
-    val imageUris: MutableState<List<Uri?>> = mutableStateOf(emptyList())
+    val imageUri: MutableState<Uri?> = mutableStateOf(null)
     val postStartDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val postEndDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val creationDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     
-    fun createPost(name: String, body: String, type: PostType, startDate: LocalDate, endDate: LocalDate)
+    suspend fun createPost()
     {
+        val model = PostModel(
+            title = titleTextState.value,
+            body = bodyTextState.value,
+            type = postTypeState.value,
+            site = sitesState,
+            author = "Daniel",
+            uri = imageUri.value,
+            startDate = postStartDateState.value,
+            endDate = postEndDateState.value,
+            creationTime = LocalDate.now()
+        )
 
+        if(model != null){
+            postsService.createNewsPost(model)
+        }
     }
 
     fun convertEnumsToDanish(postTypes: List<PostType>) : List<String>

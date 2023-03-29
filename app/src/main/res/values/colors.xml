@@ -26,4 +26,7 @@
     // Swiperefresh colors
     <color name="refresh_bg">#FFFFFFFF</color>
     <color name="refresh_content_color">#00937B</color>
+
+    // Disabled button color
+    <color name="disabled_button">#006252</color>
 </resources>

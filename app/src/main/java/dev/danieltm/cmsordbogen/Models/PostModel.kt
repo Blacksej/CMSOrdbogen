@@ -9,7 +9,7 @@ data class PostModel(
     val type: String,
     val site: List<String>,
     val author: String,
-    val uris: List<Uri?>,
+    val uri: Uri?,
     val startDate: LocalDate,
     val endDate: LocalDate,
     val creationTime: LocalDate

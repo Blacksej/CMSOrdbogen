@@ -1,28 +1,33 @@
 package dev.danieltm.cmsordbogen.Views
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.res.Resources
+import android.graphics.Paint.Align
 import android.icu.util.Calendar
+import android.net.Uri
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import dev.danieltm.cmsordbogen.R
@@ -35,20 +40,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
+import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.utilities.PostType
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -90,30 +100,42 @@ fun CreateScreen(
             DropDownTypeMenu(createPostViewModel = createPostViewModel)
         }
 
-        // CONTENT ON SCREEN
-        Box(
+
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(id = R.color.background_home))
-                .padding(top = 8.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                },
-            contentAlignment = Alignment.TopCenter
         ) {
-            Column{
-                if (createPostViewModel.postTypeState.value == "NYHED") {
-                    CreateNewsScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == "PUSH") {
-                    CreatePushScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == "EVENT") {
-                    CreateEventScreen(createPostViewModel = createPostViewModel)
-                } else if (createPostViewModel.postTypeState.value == "ANNONCERING") {
-                    CreateAnnouncementScreen(createPostViewModel = createPostViewModel)
-                } else {
-                    TypeNotPickedScreen()
+
+            // CONTENT ON SCREEN
+            Box(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Column(
+
+                    Modifier
+                        .height(IntrinsicSize.Min)
+                ) {
+                    if (createPostViewModel.postTypeState.value == "NYHED") {
+                        CreateNewsScreen(createPostViewModel = createPostViewModel)
+                    } else if (createPostViewModel.postTypeState.value == "PUSH") {
+                        CreatePushScreen(createPostViewModel = createPostViewModel)
+                    } else if (createPostViewModel.postTypeState.value == "EVENT") {
+                        CreateEventScreen(createPostViewModel = createPostViewModel)
+                    } else if (createPostViewModel.postTypeState.value == "ANNONCERING") {
+                        CreateAnnouncementScreen(createPostViewModel = createPostViewModel)
+                    } else {
+                        TypeNotPickedScreen()
+                    }
                 }
             }
         }
@@ -128,22 +150,54 @@ fun CreateNewsScreen(createPostViewModel: CreatePostViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        NameInputField(createPostViewModel = createPostViewModel)
+        // Dropdown menu for choosing website composable
+        DropDownSiteMenu(createPostViewModel = createPostViewModel)
 
-        BodyInputField(createPostViewModel = createPostViewModel)
-
+        // Choose start date and end date for post composable
         StartDatePicker(createPostViewModel = createPostViewModel)
         EndDatePicker(createPostViewModel = createPostViewModel)
 
-        DropDownSiteMenu(createPostViewModel = createPostViewModel)
+        // Title field composable
+        NameInputField(createPostViewModel = createPostViewModel)
 
-        Text(
-            text = "Nyheds skærm",
-            modifier = Modifier.padding(8.dp),
-            color = colorResource(id = R.color.black)
-        )
+        // Body/Text field composable
+        BodyInputField(createPostViewModel = createPostViewModel)
 
-        ImagePicker(createPostViewModel)
+        // Choose an image composable
+        ImagePicker(createPostViewModel = createPostViewModel)
+
+        // Submit button composable
+        SubmitPostButton(createPostViewModel = createPostViewModel)
+
+
+    }
+}
+
+suspend fun submitPost(createPostViewModel: CreatePostViewModel) {
+    createPostViewModel.createPost()
+}
+
+@Composable
+fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
+    Column(
+        modifier = Modifier
+            .padding(bottom = 60.dp)
+    ) {
+        Button(
+            onClick =
+            {
+                runBlocking {
+                    launch { submitPost(createPostViewModel) }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .padding(start = 8.dp, end = 8.dp, top = 24.dp, bottom = 8.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg))
+        ) {
+            Text(text = "SKAB INDLÆG")
+        }
     }
 }
 
@@ -329,7 +383,7 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
     } else {
         Icons.Filled.KeyboardArrowDown
     }
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -351,6 +405,7 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                     value = "Vælg side/sider",
                     onValueChange = { },
                     modifier = Modifier
+                        .padding(8.dp)
                         .fillMaxWidth()
                         .clip(shape = RoundedCornerShape(8.dp))
                         .onGloballyPositioned { coordinates ->
@@ -400,7 +455,7 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                     modifier = Modifier
                         .padding(8.dp)
                 ) {
-                sitesList.forEach { site ->
+                    sitesList.forEach { site ->
                         Text(
                             text = site,
                             modifier = Modifier
@@ -497,7 +552,10 @@ fun BodyInputField(createPostViewModel: CreatePostViewModel) {
         ) {
             TextField(
                 value = bodyTextState,
-                onValueChange = { bodyTextState = it },
+                onValueChange =
+                {
+                    bodyTextState = it
+                },
                 textStyle = TextStyle(
                     fontSize = 18.sp
                 ),
@@ -659,7 +717,7 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            .padding(8.dp)
             .clip(shape = RoundedCornerShape(8.dp))
             .background(
                 Brush.linearGradient(
@@ -698,47 +756,148 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
     }
 }
 
+
 @Composable
 fun ImagePicker(createPostViewModel: CreatePostViewModel) {
 
-    var selectedImageUris by remember {
-        mutableStateOf(createPostViewModel.imageUris)
+    val context = LocalContext.current
+    var showCustomDialog by remember {
+        mutableStateOf(false)
     }
 
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> selectedImageUris.value = uris }
+    val angle by remember { mutableStateOf(0f) }
+    var zoom by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+
+    var selectedImageUri by remember {
+        mutableStateOf(createPostViewModel.imageUri)
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedImageUri.value = uri }
     )
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg2)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
-                Button(
-                    onClick = {
-                        multiplePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg2))
-                ) {
-                    Text(text = "Vælg foto(s)", color = Color.White)
+                Text(text = "TILFØJ FOTO", color = Color.White)
+            }
+        }
+
+        Row() {
+            Button(
+                onClick = { showCustomDialog = !showCustomDialog }, modifier = Modifier
+                    .wrapContentSize(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(id = R.color.top_bar_bg2),
+                    disabledBackgroundColor = colorResource(id = R.color.disabled_button).copy(alpha = 0.5f)
+                ),
+                enabled = selectedImageUri.value != null
+            ) {
+                Text(text = "FORHÅNDSVIS BILLEDE", color = Color.White)
+            }
+
+            if (selectedImageUri.value != null) {
+                OutlinedButton(
+                    onClick = { selectedImageUri.value = null },
+                    modifier = Modifier
+                        .padding(start = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.background_home)
+                    ),
+                    border = BorderStroke(1.dp, color = colorResource(id = R.color.top_bar_bg2))
+                )
+                {
+                    Text(text = "X", color = Color.Black)
                 }
             }
         }
 
-        items(selectedImageUris.value) { uri ->
-            AsyncImage(
-                model = uri,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
+        if (showCustomDialog && selectedImageUri.value != null) {
+            CustomAlertDialog({
+                showCustomDialog = !showCustomDialog
+            }, {
+                val activity = (context as? Activity)
+                activity?.finish()
+            },
+                selectedImageUri.value
             )
+        }
+    }
+}
+
+@Composable
+fun CustomAlertDialog(onDismiss: () -> Unit, onExit: () -> Unit, uri: Uri?) {
+
+    Dialog(
+        onDismissRequest = { onDismiss() }, properties = DialogProperties(
+            dismissOnBackPress = false, dismissOnClickOutside = false
+        )
+    ) {
+        Card(
+            //shape = MaterialTheme.shapes.medium,
+            shape = RoundedCornerShape(10.dp),
+            // modifier = modifier.size(280.dp, 240.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            elevation = 8.dp
+        ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(id = R.color.top_bar_bg))
+            ) {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+
+                    ) {
+
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = "PostImage",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
+
+                Row(Modifier.padding(top = 10.dp)) {
+                    OutlinedButton(
+                        onClick = { onDismiss() },
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .weight(1F),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.top_bar_bg2)
+                        ),
+                    ) {
+                        Text(text = "LUK", color = Color.White)
+                    }
+                }
+            }
         }
     }
 }

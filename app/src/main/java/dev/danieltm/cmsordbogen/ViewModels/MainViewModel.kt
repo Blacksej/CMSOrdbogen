@@ -12,17 +12,19 @@ import dev.danieltm.cmsordbogen.Models.BottomNavItem
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.Models.Repositories.PostRepository
 import dev.danieltm.cmsordbogen.utilities.IPostRepository
+import dev.danieltm.cmsordbogen.utilities.PostsService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MainViewModel : ViewModel(){
 
-    var postRepo = PostRepository()
+    var postsService = PostsService.create()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -33,7 +35,10 @@ class MainViewModel : ViewModel(){
 
     init {
         loadRecentPosts()
-        getPostsTemp()
+
+        runBlocking {
+            launch { getPostsTemp() }
+        }
     }
 
     fun loadRecentPosts(){
@@ -69,8 +74,8 @@ class MainViewModel : ViewModel(){
         return navItems
     }
 
-    fun getPostsTemp()
+    suspend fun getPostsTemp()
     {
-        _allPostsList.value = postRepo.getAllPosts()
+        _allPostsList.value = postsService.getAllPosts()
     }
 }
