@@ -2,15 +2,19 @@ package dev.danieltm.cmsordbogen.Models
 
 import android.net.Uri
 import java.time.LocalDate
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PostModel(
-    val title: String,
-    val body: String,
+    val id: Int,
     val type: String,
-    val site: List<String>,
-    val author: String,
-    val uri: Uri?,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-    val creationTime: LocalDate
+    val title: String,
+    val sites: List<String>,
+    val body: String,
+    //val author: String,
+    val image: String?,
+    val startDate: String,
+    val endDate: String
+    //val creationTime: LocalDate
 )

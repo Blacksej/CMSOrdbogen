@@ -583,6 +583,7 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
     // Fetching the Local Context
     val context = LocalContext.current
 
+    // Specifies what format i want a date in
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     var startDate by remember { mutableStateOf(createPostViewModel.postStartDateState) }
@@ -621,9 +622,13 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
 
     var bodyTextState: String by createPostViewModel.bodyTextState
 
+    // controller and manager for controlling keyboard actions,
+    // and managing the focus in the app. For example if i click on the
+    // screen the focusmanager can detect it and set a focus or unfocus an element
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
+    // Creating the outer box for the datepicker
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -640,6 +645,7 @@ fun StartDatePicker(createPostViewModel: CreatePostViewModel) {
                 )
             ),
     ) {
+        // Using a ROW to align datepicker and date display text in a single line
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -711,9 +717,13 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
 
     var bodyTextState: String by createPostViewModel.bodyTextState
 
+    // controller and manager for controlling keyboard actions,
+    // and managing the focus in the app. For example if i click on the
+    // screen the focusmanager can detect it and set a focus or unfocus an element
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
+    // Outer box for the datepicker
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -730,6 +740,7 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
                 )
             ),
     ) {
+        // Defining a ROW to align datepicker and date text in a single line
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -761,6 +772,8 @@ fun EndDatePicker(createPostViewModel: CreatePostViewModel) {
 fun ImagePicker(createPostViewModel: CreatePostViewModel) {
 
     val context = LocalContext.current
+
+    // Defining a boolean to check if dialog box is shown or not (true/false)
     var showCustomDialog by remember {
         mutableStateOf(false)
     }
@@ -786,6 +799,8 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+
+            // Button for opening an image picker
             Button(
                 onClick = {
                     singlePhotoPickerLauncher.launch(
@@ -830,6 +845,10 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
             }
         }
 
+        // IF statement to check if dialog is open already (true)
+        // and if the selectedImageUri is not null, since i don't
+        // want the user to be able to be able to open dialog window
+        // if no picture is chosen
         if (showCustomDialog && selectedImageUri.value != null) {
             CustomAlertDialog({
                 showCustomDialog = !showCustomDialog

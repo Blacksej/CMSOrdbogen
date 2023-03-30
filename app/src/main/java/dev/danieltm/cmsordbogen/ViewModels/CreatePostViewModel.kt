@@ -31,15 +31,16 @@ class CreatePostViewModel : ViewModel() {
     suspend fun createPost()
     {
         val model = PostModel(
+            id = 6,
             title = titleTextState.value,
             body = bodyTextState.value,
             type = postTypeState.value,
-            site = sitesState,
-            author = "Daniel",
-            uri = imageUri.value,
-            startDate = postStartDateState.value,
-            endDate = postEndDateState.value,
-            creationTime = LocalDate.now()
+            sites = sitesState,
+            //author = "Daniel",
+            image = imageUri.value.toString(),
+            startDate = postStartDateState.value.toString(),
+            endDate = postEndDateState.value.toString(),
+            //creationTime = LocalDate.now()
         )
 
         if(model != null){
@@ -47,10 +48,15 @@ class CreatePostViewModel : ViewModel() {
         }
     }
 
+    // Converts PostType ENUMS to danish, since the app has to display
+    // value in danish
     fun convertEnumsToDanish(postTypes: List<PostType>) : List<String>
     {
         var danishTypes: MutableList<String> = mutableListOf<String>()
 
+        // Iterates over the postTypes list and using a when(switch) to
+        // determine what type it is, and afterwards adds the corresponding
+        // danish type name to a list
         postTypes.forEach { type ->
             when(type){
                 PostType.ANNOUNCEMENT -> danishTypes.add("ANNONCERING")

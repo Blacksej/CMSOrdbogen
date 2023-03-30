@@ -17,185 +17,61 @@ class PostRepository(
 ) : PostsService
 {
 
+
+    // Function to fetch ALL posts from the API
     override suspend fun getAllPosts(): List<PostModel> {
+
+        // Dummy data until i get access to an API
         var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
+                id = 2,
                 title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "NYHED",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
+                sites = emptyList<String>(),
+                //author = "Daniel",
+                image = null,
+                startDate = LocalDate.now().toString(),
+                endDate = LocalDate.now().plusDays(2).toString(),
+                //creationTime = LocalDate.now()
             ),
             PostModel(
+                id = 3,
                 title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "NYHED",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
+                sites = emptyList<String>(),
+                //author = "Daniel",
+                image = null,
+                startDate = LocalDate.now().toString(),
+                endDate = LocalDate.now().plusDays(2).toString(),
+                //creationTime = LocalDate.now()
             ),
             PostModel(
+                id = 4,
                 title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "NYHED",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
+                sites = emptyList<String>(),
+                //author = "Daniel",
+                image = null,
+                startDate = LocalDate.now().toString(),
+                endDate = LocalDate.now().plusDays(2).toString(),
+                //creationTime = LocalDate.now()
             ),
             PostModel(
+                id = 5,
                 title = "Ny ordbog",
                 body = "Der er en ny ordbog ude lige nu, tjek den ud",
                 type = "NYHED",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Gokart med gutterne",
-                body = "Vi kører gokart, jaaaaaa",
-                type = "EVENT",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Gokart med gutterne",
-                body = "Vi kører gokart, jaaaaaa",
-                type = "EVENT",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Gokart med gutterne",
-                body = "Vi kører gokart, jaaaaaa",
-                type = "EVENT",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Gokart med gutterne",
-                body = "Vi kører gokart, jaaaaaa",
-                type = "EVENT",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Der er vedligeholdelse på siden snart",
-                body = "Siden vil være nede lidt",
-                type = "ANNONCERING",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Der er vedligeholdelse på siden snart",
-                body = "Siden vil være nede lidt",
-                type = "ANNONCERING",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Der er vedligeholdelse på siden snart",
-                body = "Siden vil være nede lidt",
-                type = "ANNONCERING",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Abonner på vores nyhedsbrev",
-                body = "Klik her for at abonnere",
-                type = "PUSH",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Abonner på vores nyhedsbrev",
-                body = "Klik her for at abonnere",
-                type = "PUSH",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Abonner på vores nyhedsbrev",
-                body = "Klik her for at abonnere",
-                type = "PUSH",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Abonner på vores nyhedsbrev",
-                body = "Klik her for at abonnere",
-                type = "PUSH",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
-            PostModel(
-                title = "Abonner på vores nyhedsbrev",
-                body = "Klik her for at abonnere",
-                type = "PUSH",
-                site = emptyList<String>(),
-                author = "Daniel",
-                uri = null,
-                startDate = LocalDate.now(),
-                endDate = LocalDate.now().plusDays(2),
-                creationTime = LocalDate.now()
-            ),
+                sites = emptyList<String>(),
+                //author = "Daniel",
+                image = null,
+                startDate = LocalDate.now().toString(),
+                endDate = LocalDate.now().plusDays(2).toString(),
+                //creationTime = LocalDate.now()
+            )
 
         )
         return posts
@@ -207,7 +83,7 @@ class PostRepository(
 
     override suspend fun createNewsPost(postModel: PostModel)
     {
-        val reponse: HttpResponse = client.post(""){
+        val reponse: HttpResponse = client.post("https://10.0.2.2:44316/api/Contents"){
             contentType(ContentType.Application.Json)
             setBody(postModel)
         }

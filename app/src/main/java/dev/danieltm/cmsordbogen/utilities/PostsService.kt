@@ -14,6 +14,7 @@ interface PostsService {
     suspend fun createNewsPost(postModel: PostModel)
     suspend fun updatePost(postModel: PostModel)
 
+    // Creates a client and returns a PostRepository with an injected client
     companion object{
         fun create() : PostsService{
             return PostRepository (
