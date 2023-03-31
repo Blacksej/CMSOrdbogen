@@ -8,7 +8,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -22,6 +24,7 @@ import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
 import dev.danieltm.cmsordbogen.Views.*
 import dev.danieltm.cmsordbogen.ui.theme.CMSOrdbogenTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -70,6 +73,10 @@ fun Navigation(
             // REPRESENTS POSTS SCREEN
             PostsScreen(mainViewModel, swipeRefreshState)
         }
+        composable("login") {
+            // REPRESENTS LOGIN SCREEN
+            LoginPage(navController = navController)
+        }
     }
 }
 
@@ -81,10 +88,20 @@ fun ScaffoldBottomNavigationBarAndTopBar(
     navHostController: NavHostController,
     swipeRefreshState: SwipeRefreshState
 ) {
+    val scaffoldState = rememberScaffoldState()
+    val scope =  rememberCoroutineScope()
+
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
-            TopBar(navController = navController)
-        },
+            TopBar(
+                navController = navController,
+                onNavigationClick = {
+                    scope.launch{
+                        scaffoldState.drawerState.open()
+                    }
+                }
+            ) },
         bottomBar = {
             BottomNavigationBar(
                 items = mainViewModel.getNavList(),
@@ -101,7 +118,18 @@ fun ScaffoldBottomNavigationBarAndTopBar(
                     navController.navigate(it.route)
                 }
             )
-        }
+        },
+        drawerContent = {
+            DrawerHeader()
+            DrawerBody(
+                navController = navController,
+                closeNavDrawer = {
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                })
+        },
+        drawerBackgroundColor = colorResource(id = R.color.background_home)
     ) { paddingValues ->
         Modifier.padding(paddingValues)
         Navigation(

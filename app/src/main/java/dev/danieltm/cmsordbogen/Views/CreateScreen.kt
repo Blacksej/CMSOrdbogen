@@ -122,6 +122,9 @@ fun CreateScreen(
             ) {
                 Column(
 
+                    // IntrinsiczSize provides information ot the parent
+                    // about the the max or min width/height
+                    // of it's widest or or tallest child
                     Modifier
                         .height(IntrinsicSize.Min)
                 ) {

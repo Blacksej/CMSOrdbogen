@@ -2,6 +2,7 @@ package dev.danieltm.cmsordbogen.ViewModels
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FloatingActionButton
@@ -69,7 +70,7 @@ class MainViewModel : ViewModel(){
                 route = "posts",
                 icon = Icons.Default.Menu,
                 badgeCount = 7
-            ),
+            )
         )
         return navItems
     }
