@@ -5,6 +5,7 @@ import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.IPostRepository
 import dev.danieltm.cmsordbogen.utilities.PostsService
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -21,8 +22,15 @@ class PostRepository(
     // Function to fetch ALL posts from the API
     override suspend fun getAllPosts(): List<PostModel> {
 
+        var get = client.get{ url("https://ascendance.hrmoller.com/api/contents") }
+        var body = get.body<List<PostModel>>()
+        var posts: List<PostModel>
+
+        posts = body
+        return posts
+
         // Dummy data until i get access to an API
-        var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        /*var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
                 id = 2,
@@ -73,12 +81,16 @@ class PostRepository(
                 //creationTime = LocalDate.now()
             )
 
-        )
-        return posts
+        )*/
+        //return posts
     }
 
     override suspend fun getRecentPosts() : List<PostModel> {
-        TODO("Not yet implemented")
+
+        return emptyList()
+        //var get = client.get{ url("https://ascendance.hrmoller.com/api/contents") }
+        //var body = get.body<List<PostModel>>()
+        //return body
     }
 
     override suspend fun createNewsPost(postModel: PostModel)
