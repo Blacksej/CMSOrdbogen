@@ -7,8 +7,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostModel(
-    val id: Int,
-    val type: String,
+    // NEEDS TO BE CHANGED BACK TO VAL WHEN API IS MORE READY
+    var id: Int,
+    // NEEDS TO BE CHANGED BACK TO VAL WHEN API IS MORE READY
+    var type: String,
     val title: String,
     val sites: List<String>,
     val body: String,

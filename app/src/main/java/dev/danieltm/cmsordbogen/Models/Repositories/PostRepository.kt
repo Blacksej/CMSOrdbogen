@@ -1,6 +1,7 @@
 package dev.danieltm.cmsordbogen.Models.Repositories
 
 import android.net.Uri
+import androidx.compose.ui.text.toLowerCase
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.IPostRepository
 import dev.danieltm.cmsordbogen.utilities.PostsService
@@ -9,8 +10,11 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class PostRepository(
     //Dependency injection
@@ -24,10 +28,14 @@ class PostRepository(
 
         var get = client.get{ url("https://ascendance.hrmoller.com/api/contents") }
         var body = get.body<List<PostModel>>()
-        var posts: List<PostModel>
 
-        posts = body
-        return posts
+        body.forEach(){ post ->
+            if(post.type.lowercase() == "news"){
+                post.type = "NYHED"
+            }
+        }
+
+        return body
 
         // Dummy data until i get access to an API
         /*var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -95,9 +103,17 @@ class PostRepository(
 
     override suspend fun createNewsPost(postModel: PostModel)
     {
-        val reponse: HttpResponse = client.post("https://10.0.2.2:44316/api/Contents"){
-            contentType(ContentType.Application.Json)
-            setBody(postModel)
+        val tempPosts = getAllPosts()
+        val biggestIdObject = tempPosts.maxByOrNull { it.id }
+
+        if(biggestIdObject != null){
+
+            postModel.id = biggestIdObject.id + 1
+
+            val reponse: HttpResponse = client.post("https://ascendance.hrmoller.com/api/contents"){
+                contentType(ContentType.Application.Json)
+                setBody(postModel)
+            }
         }
 
     }

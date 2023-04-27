@@ -30,8 +30,8 @@ class CreatePostViewModel : ViewModel() {
     
     suspend fun createPost()
     {
-        val model = PostModel(
-            id = 6,
+        var model = PostModel(
+            id = 0,
             title = titleTextState.value,
             body = bodyTextState.value,
             type = postTypeState.value,

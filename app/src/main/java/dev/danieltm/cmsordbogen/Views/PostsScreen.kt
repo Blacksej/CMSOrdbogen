@@ -1,5 +1,6 @@
 package dev.danieltm.cmsordbogen.Views
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
+import dev.danieltm.cmsordbogen.MainActivity
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -73,7 +76,9 @@ fun PostsScreen(
                     )
                 }
             ) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier
+                    .padding(bottom = 70.dp)
+                    .fillMaxSize()) {
                     val grouped = postsList.groupBy { it.type }
                     grouped.forEach { (type, posts) ->
                         stickyHeader {

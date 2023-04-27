@@ -1,5 +1,10 @@
 package dev.danieltm.cmsordbogen.ViewModels
 
+import android.app.Activity
+import android.content.Context
+import android.os.Debug
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Face
@@ -48,6 +53,7 @@ class MainViewModel : ViewModel(){
             _isLoading.value = true
             delay(1000L)
             _isLoading.value = false
+            getPostsTemp()
         }
 
     }

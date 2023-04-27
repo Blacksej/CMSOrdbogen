@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,14 +38,26 @@ fun PostItem(item: PostModel) {
                     .align(Alignment.CenterVertically)
                     .size(200.dp)
             )
-            Text(
+            Column(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
                     .align(Alignment.CenterVertically),
-                text = item.title,
-                color = Color.White,
-                fontSize = 16.sp
-            )
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
+                    text = item.title,
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp),
+                    text = "ID: " + item.id.toString(),
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
