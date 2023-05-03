@@ -91,4 +91,7 @@ dependencies {
 
     implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+
+    // Splash screen
+    implementation 'androidx.core:core-splashscreen:1.0.1'
 }
