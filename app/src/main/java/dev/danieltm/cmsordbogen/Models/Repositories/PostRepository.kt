@@ -110,7 +110,7 @@ class PostRepository(
 
             postModel.id = biggestIdObject.id + 1
 
-            val reponse: HttpResponse = client.post("https://ascendance.hrmoller.com/api/contents"){
+            val response: HttpResponse = client.post("https://ascendance.hrmoller.com/api/contents"){
                 contentType(ContentType.Application.Json)
                 setBody(postModel)
             }
@@ -120,6 +120,11 @@ class PostRepository(
 
     override suspend fun updatePost(postModel: PostModel) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun deletePost(postId: Int) {
+        val response: HttpResponse = client.delete("https://ascendance.hrmoller.com/api/contents/${postId}")
+        var response1 = response.toString()
     }
 
 }

@@ -13,6 +13,7 @@ interface PostsService {
     suspend fun getRecentPosts() : List<PostModel>
     suspend fun createNewsPost(postModel: PostModel)
     suspend fun updatePost(postModel: PostModel)
+    suspend fun deletePost(postId: Int)
 
     // Creates a client and returns a PostRepository with an injected client
     companion object{

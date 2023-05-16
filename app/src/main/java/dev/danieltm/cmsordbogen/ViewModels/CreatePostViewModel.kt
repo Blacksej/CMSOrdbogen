@@ -8,6 +8,7 @@ import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.PostType
 import dev.danieltm.cmsordbogen.utilities.PostsService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
@@ -19,7 +20,12 @@ class CreatePostViewModel : ViewModel() {
     val bodyTextState: MutableState<String> = mutableStateOf("")
     val postTypeState: MutableState<String> = mutableStateOf("IKKE VALGT")
 
-    val sitesState = mutableListOf<String>()
+    //val sitesState = mutableListOf<String>()
+    private val _sitesState = MutableStateFlow<List<String>>(emptyList())
+
+    // asStateFlow() makes this mutablestateflow a read-only stateflow.
+    val sites: StateFlow<List<String>> = _sitesState.asStateFlow()
+
     val tempDisplaySiteState: MutableState<String> = mutableStateOf("IKKE VALGT")
 
     val authorState: MutableState<String> = mutableStateOf("Daniel")
@@ -27,7 +33,18 @@ class CreatePostViewModel : ViewModel() {
     val postStartDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val postEndDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val creationDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
-    
+
+    fun addSiteToList(site: String){
+        val currentList = _sitesState.value.toMutableList()
+        currentList.add(site)
+        _sitesState.value = currentList
+    }
+
+    fun removeSiteFromList(site: String){
+        val currentList = _sitesState.value.toMutableList()
+        currentList.remove(site)
+        _sitesState.value = currentList
+    }
     suspend fun createPost()
     {
         var model = PostModel(
@@ -35,7 +52,7 @@ class CreatePostViewModel : ViewModel() {
             title = titleTextState.value,
             body = bodyTextState.value,
             type = postTypeState.value,
-            sites = sitesState,
+            sites = _sitesState.value,
             //author = "Daniel",
             image = imageUri.value.toString(),
             startDate = postStartDateState.value.toString(),

@@ -17,8 +17,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -57,6 +55,8 @@ import coil.compose.AsyncImage
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.utilities.PostType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -189,8 +189,8 @@ fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
         Button(
             onClick =
             {
-                runBlocking {
-                    launch { submitPost(createPostViewModel) }
+                CoroutineScope(Dispatchers.IO).launch {
+                    submitPost(createPostViewModel)
                 }
             },
             modifier = Modifier
@@ -365,9 +365,8 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
 
     var expanded by remember { mutableStateOf(false) }
 
-    var sitesList = remember {
-        createPostViewModel.sitesState.toMutableStateList()
-    }
+    val sites by createPostViewModel.sites.collectAsState()
+    val sitesMutable = sites.toMutableList()
 
     //var tempDisplaySite: String by createPostViewModel.tempDisplaySiteState
 
@@ -380,6 +379,8 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
         "ABC.Ordbogen.com",
         "Grammatip.com"
     )
+
+    val checkedValue = remember { mutableStateOf(false) }
 
     val icon = if (expanded) {
         Icons.Filled.KeyboardArrowUp
@@ -403,8 +404,48 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                     )
                 )
         ) {
-            Column() {
-                TextField(
+            Column(
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp),
+            ) {
+                listOfPossibleSites.forEach() { site ->
+                    Row(){
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 5.dp),
+                            text = site,
+                            color = Color.White,
+                            fontSize = 18.sp)
+                        Switch(
+                            checked = sites.contains(site),
+                            onCheckedChange = {
+                                //checkedValue.value = it
+                                if(!sites.contains(site)){
+                                    createPostViewModel.addSiteToList(site)
+                                }
+                                else if(sites.contains(site)){
+                                    createPostViewModel.removeSiteFromList(site)
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                        )
+                    }
+                        /*Button(
+                            modifier = Modifier
+                                .padding(start = 0.dp)
+                                .fillMaxWidth(),
+                            enabled = selected,
+                            onClick = {
+                                createPostViewModel.addSiteToList(site)
+                                selected = !selected
+                                      },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg))
+                        ) {
+                            Text(text = site)
+                        }*/
+                }
+                /*TextField(
                     value = "Vælg side/sider",
                     onValueChange = { },
                     modifier = Modifier
@@ -432,9 +473,9 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                         Icon(icon, "contentDescription",
                             Modifier.clickable { expanded = !expanded })
                     },
-                )
+                )*/
 
-                DropdownMenu(
+                /*DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier
@@ -446,8 +487,8 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                             expanded = false
                             // Checks if the list already contains the site.
                             // Makes sure we don't get a duplicate of a site.
-                            if (!sitesList.contains(label)) {
-                                sitesList.add(label)
+                            if (!sites.contains(label)) {
+                                createPostViewModel.addSiteToList(label)
                             }
                         }) {
                             Text(text = label, color = Color.White)
@@ -458,17 +499,17 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                     modifier = Modifier
                         .padding(8.dp)
                 ) {
-                    sitesList.forEach { site ->
+                    sites.forEach { site ->
                         Text(
                             text = site,
                             modifier = Modifier
                                 .padding(start = 8.dp)
-                                .clickable(onClick = { sitesList.remove(site) }),
+                                .clickable(onClick = { createPostViewModel.removeSiteFromList(site) }),
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center
                         )
                     }
-                }
+                }*/
             }
         }
     }

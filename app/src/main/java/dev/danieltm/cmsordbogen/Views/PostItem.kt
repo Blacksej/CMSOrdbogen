@@ -2,6 +2,7 @@ package dev.danieltm.cmsordbogen.Views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,17 +14,23 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import dev.danieltm.cmsordbogen.R
 import dev.danieltm.cmsordbogen.Models.PostModel
+import dev.danieltm.cmsordbogen.ViewModels.ShowPostViewModel
 
 @Composable
-fun PostItem(item: PostModel) {
+fun PostItem(item: PostModel, navController: NavHostController, showPostViewModel: ShowPostViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
             .height(120.dp)
             .background(color = colorResource(id = R.color.top_bar_bg2))
+            .clickable {
+                showPostViewModel.setPost(item)
+                navController.navigate(route = "editPost")
+            }
     ) {
         Row(
             modifier = Modifier

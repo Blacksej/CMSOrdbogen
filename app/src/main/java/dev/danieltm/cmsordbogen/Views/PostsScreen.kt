@@ -21,17 +21,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import dev.danieltm.cmsordbogen.MainActivity
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
+import dev.danieltm.cmsordbogen.ViewModels.ShowPostViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostsScreen(
     mainViewModel: MainViewModel,
-    swipeRefreshState: SwipeRefreshState
+    showPostViewModel: ShowPostViewModel,
+    swipeRefreshState: SwipeRefreshState,
+    navController: NavHostController
 ) {
     val postsList by mainViewModel.allPostsList.collectAsState()
 
@@ -95,7 +100,7 @@ fun PostsScreen(
                             )
                         }
                         items(posts) { post ->
-                            PostItem(item = post)
+                            PostItem(item = post, navController = navController, showPostViewModel)
                         }
                     }
                 }

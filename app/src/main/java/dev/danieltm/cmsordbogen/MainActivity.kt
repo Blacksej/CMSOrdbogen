@@ -23,6 +23,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.ViewModels.MainViewModel
+import dev.danieltm.cmsordbogen.ViewModels.ShowPostViewModel
 import dev.danieltm.cmsordbogen.Views.*
 import dev.danieltm.cmsordbogen.ui.theme.CMSOrdbogenTheme
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
 
                 val mainViewModel = viewModel<MainViewModel>()
                 val createPostViewModel = viewModel<CreatePostViewModel>()
+                val showPostViewModel = viewModel<ShowPostViewModel>()
                 val navController = rememberNavController()
 
                 val isLoading by mainViewModel.isLoading.collectAsState()
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
                 ScaffoldBottomNavigationBarAndTopBar(
                     mainViewModel = mainViewModel,
                     createPostViewModel = createPostViewModel,
+                    showPostViewModel = showPostViewModel,
                     navController = navController,
                     navHostController = navController,
                     swipeRefreshState = swipeRefreshState
@@ -62,6 +65,7 @@ class MainActivity : ComponentActivity() {
 fun Navigation(
     navController: NavHostController,
     mainViewModel: MainViewModel,
+    showPostViewModel: ShowPostViewModel,
     createPostViewModel: CreatePostViewModel,
     swipeRefreshState: SwipeRefreshState
 ) {
@@ -76,11 +80,15 @@ fun Navigation(
         }
         composable("posts") {
             // REPRESENTS POSTS SCREEN
-            PostsScreen(mainViewModel, swipeRefreshState)
+            PostsScreen(mainViewModel, showPostViewModel, swipeRefreshState, navController)
         }
         composable("login") {
             // REPRESENTS LOGIN SCREEN
             LoginPage(navController = navController)
+        }
+        composable("editPost") {
+            // REPRESENTS A POST
+            ShowPostScreen(showPostViewModel)
         }
     }
 }
@@ -89,6 +97,7 @@ fun Navigation(
 fun ScaffoldBottomNavigationBarAndTopBar(
     mainViewModel: MainViewModel,
     createPostViewModel: CreatePostViewModel,
+    showPostViewModel: ShowPostViewModel,
     navController: NavController,
     navHostController: NavHostController,
     swipeRefreshState: SwipeRefreshState
@@ -140,6 +149,7 @@ fun ScaffoldBottomNavigationBarAndTopBar(
         Navigation(
             navController = navHostController,
             mainViewModel,
+            showPostViewModel,
             createPostViewModel,
             swipeRefreshState = swipeRefreshState
         )
