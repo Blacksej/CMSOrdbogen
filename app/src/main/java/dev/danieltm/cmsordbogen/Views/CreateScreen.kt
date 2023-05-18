@@ -2,6 +2,7 @@ package dev.danieltm.cmsordbogen.Views
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Paint.Align
 import android.icu.util.Calendar
@@ -12,11 +13,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -44,8 +46,10 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -55,10 +59,7 @@ import coil.compose.AsyncImage
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.ViewModels.CreatePostViewModel
 import dev.danieltm.cmsordbogen.utilities.PostType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -180,30 +181,237 @@ suspend fun submitPost(createPostViewModel: CreatePostViewModel) {
     createPostViewModel.createPost()
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
     Column(
         modifier = Modifier
             .padding(bottom = 60.dp)
     ) {
+        val context = LocalContext.current
+        val openDialog = remember { mutableStateOf(false) }
+        val fontSize = 18
         Button(
-            onClick =
-            {
-                CoroutineScope(Dispatchers.IO).launch {
-                    submitPost(createPostViewModel)
-                }
-            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
                 .padding(start = 8.dp, end = 8.dp, top = 24.dp, bottom = 8.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg))
-        ) {
+            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg)),
+            onClick =
+            {
+                // Check if sites, title or body is empty.
+                if (createPostViewModel.sites.value != emptyList<String>() &&
+                    createPostViewModel.titleTextState.value != "" &&
+                    createPostViewModel.bodyTextState.value != ""
+                ) {
+                    openDialog.value = true
+                } else {
+                    Toast.makeText(
+                        context,
+                        "FEJL: Udfyld venligst som minimum\ntitel, sider og indhold",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }) {
             Text(text = "SKAB INDLÆG")
+        }
+
+        if (openDialog.value) {
+            Dialog(
+                onDismissRequest = {
+                    openDialog.value = false
+                },
+                content = {
+                    Column(
+                        modifier = Modifier
+                            .background(colorResource(id = R.color.top_bar_bg2))
+                            .verticalScroll(rememberScrollState())
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                            text = "Bekræft indlæg",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.postTypeState.value,
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Type") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.sites.toString(),
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Sider") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.titleTextState.value,
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Titel") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.bodyTextState.value,
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Indhold") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.postStartDateState.value.toString(),
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Start dato") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            value = createPostViewModel.postEndDateState.value.toString(),
+                            onValueChange = {},
+                            readOnly = true,
+                            textStyle = TextStyle(fontSize = fontSize.sp),
+                            label = { Text(text = "Slut dato") },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.White,
+                                cursorColor = Color.White,
+                                backgroundColor = Color.DarkGray
+                            )
+                        )
+                        if (createPostViewModel.imageUri.value != null) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+
+                                ) {
+
+                                AsyncImage(
+                                    model = createPostViewModel.imageUri.value,
+                                    contentDescription = "PostImage",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.FillWidth
+                                )
+                            }
+                        }
+                        Row() {
+                            // Dismiss button
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(.5f)
+                                    .padding(4.dp),
+                                onClick = {
+                                    openDialog.value = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(
+                                        id = R.color.top_bar_bg
+                                    )
+                                )
+                            ) {
+                                Text(
+                                    text = "Fortryd",
+                                    fontSize = fontSize.sp,
+                                    color = Color.White
+                                )
+                            }
+                            // Confirm button
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(.5f)
+                                    .padding(4.dp),
+                                onClick = {
+                                    openDialog.value = false
+
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        submitPost(createPostViewModel)
+                                        resetPostScreen(createPostViewModel)
+                                    }
+
+                                    Toast.makeText(context, "Indlæg oprettet", Toast.LENGTH_LONG)
+                                        .show()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(
+                                        id = R.color.top_bar_bg
+                                    )
+                                )
+                            ) {
+                                Text(
+                                    text = "Bekræft",
+                                    fontSize = fontSize.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                },
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false
+                )
+            )
         }
     }
 }
 
+fun resetPostScreen(createPostViewModel: CreatePostViewModel){
+    createPostViewModel.clearPostValues()
+}
 @Composable
 fun CreateAnnouncementScreen(createPostViewModel: CreatePostViewModel) {
     Column(
@@ -409,21 +617,21 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                     .padding(start = 8.dp, end = 8.dp),
             ) {
                 listOfPossibleSites.forEach() { site ->
-                    Row(){
+                    Row() {
                         Text(
                             modifier = Modifier
                                 .padding(top = 5.dp),
                             text = site,
                             color = Color.White,
-                            fontSize = 18.sp)
+                            fontSize = 18.sp
+                        )
                         Switch(
                             checked = sites.contains(site),
                             onCheckedChange = {
                                 //checkedValue.value = it
-                                if(!sites.contains(site)){
+                                if (!sites.contains(site)) {
                                     createPostViewModel.addSiteToList(site)
-                                }
-                                else if(sites.contains(site)){
+                                } else if (sites.contains(site)) {
                                     createPostViewModel.removeSiteFromList(site)
                                 }
                             },
@@ -431,19 +639,19 @@ fun DropDownSiteMenu(createPostViewModel: CreatePostViewModel) {
                                 .padding(start = 10.dp)
                         )
                     }
-                        /*Button(
-                            modifier = Modifier
-                                .padding(start = 0.dp)
-                                .fillMaxWidth(),
-                            enabled = selected,
-                            onClick = {
-                                createPostViewModel.addSiteToList(site)
-                                selected = !selected
-                                      },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg))
-                        ) {
-                            Text(text = site)
-                        }*/
+                    /*Button(
+                        modifier = Modifier
+                            .padding(start = 0.dp)
+                            .fillMaxWidth(),
+                        enabled = selected,
+                        onClick = {
+                            createPostViewModel.addSiteToList(site)
+                            selected = !selected
+                                  },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.top_bar_bg))
+                    ) {
+                        Text(text = site)
+                    }*/
                 }
                 /*TextField(
                     value = "Vælg side/sider",

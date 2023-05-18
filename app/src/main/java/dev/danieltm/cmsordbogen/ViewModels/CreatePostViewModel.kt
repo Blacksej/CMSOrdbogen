@@ -45,6 +45,17 @@ class CreatePostViewModel : ViewModel() {
         currentList.remove(site)
         _sitesState.value = currentList
     }
+
+    fun clearPostValues(){
+        titleTextState.value = ""
+        bodyTextState.value = ""
+        //postTypeState.value = "IKKE VALGT"
+        _sitesState.value = emptyList()
+        imageUri.value = null
+        postStartDateState.value = LocalDate.now()
+        postEndDateState.value = LocalDate.now()
+    }
+
     suspend fun createPost()
     {
         var model = PostModel(
