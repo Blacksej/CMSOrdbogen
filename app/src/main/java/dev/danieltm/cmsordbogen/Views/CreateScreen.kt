@@ -191,6 +191,7 @@ fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
         val context = LocalContext.current
         val openDialog = remember { mutableStateOf(false) }
         val fontSize = 18
+        val postSites by createPostViewModel.sites.collectAsState()
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -258,7 +259,7 @@ fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 4.dp),
-                            value = createPostViewModel.sites.toString(),
+                            value = postSites.toString(),
                             onValueChange = {},
                             readOnly = true,
                             textStyle = TextStyle(fontSize = fontSize.sp),
@@ -409,9 +410,10 @@ fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
     }
 }
 
-fun resetPostScreen(createPostViewModel: CreatePostViewModel){
+fun resetPostScreen(createPostViewModel: CreatePostViewModel) {
     createPostViewModel.clearPostValues()
 }
+
 @Composable
 fun CreateAnnouncementScreen(createPostViewModel: CreatePostViewModel) {
     Column(
