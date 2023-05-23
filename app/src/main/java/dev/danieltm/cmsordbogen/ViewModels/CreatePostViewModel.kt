@@ -1,8 +1,16 @@
 package dev.danieltm.cmsordbogen.ViewModels
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.util.Base64
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import dev.danieltm.cmsordbogen.Models.PostModel
 import dev.danieltm.cmsordbogen.utilities.PostType
@@ -10,6 +18,7 @@ import dev.danieltm.cmsordbogen.utilities.PostsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 
 class CreatePostViewModel : ViewModel() {
@@ -29,7 +38,7 @@ class CreatePostViewModel : ViewModel() {
     val tempDisplaySiteState: MutableState<String> = mutableStateOf("IKKE VALGT")
 
     val authorState: MutableState<String> = mutableStateOf("Daniel")
-    val imageUri: MutableState<Uri?> = mutableStateOf(null)
+    val imageUri: MutableState<Uri> = mutableStateOf(Uri.EMPTY)
     val postStartDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val postEndDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
     val creationDateState: MutableState<LocalDate> = mutableStateOf(LocalDate.now())
@@ -51,13 +60,27 @@ class CreatePostViewModel : ViewModel() {
         bodyTextState.value = ""
         //postTypeState.value = "IKKE VALGT"
         _sitesState.value = emptyList()
-        imageUri.value = null
+        imageUri.value = Uri.EMPTY
         postStartDateState.value = LocalDate.now()
         postEndDateState.value = LocalDate.now()
     }
 
-    suspend fun createPost()
+    suspend fun createPost(context : Context)
     {
+        var encodedImage: String = ""
+        try {
+            // Convert/encode our image path to a Base64 string
+            val baos = ByteArrayOutputStream()
+            val bm = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imageUri.value))
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageBytes = baos.toByteArray()
+            encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+        }
+        catch (error: java.lang.Exception){
+
+        }
+
+
         var model = PostModel(
             id = 0,
             title = titleTextState.value,
@@ -65,7 +88,7 @@ class CreatePostViewModel : ViewModel() {
             type = postTypeState.value,
             sites = _sitesState.value,
             //author = "Daniel",
-            image = imageUri.value.toString(),
+            image = encodedImage,
             startDate = postStartDateState.value.toString(),
             endDate = postEndDateState.value.toString(),
             //creationTime = LocalDate.now()

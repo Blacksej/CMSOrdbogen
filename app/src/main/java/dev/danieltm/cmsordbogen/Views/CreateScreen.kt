@@ -177,8 +177,8 @@ fun CreateNewsScreen(createPostViewModel: CreatePostViewModel) {
     }
 }
 
-suspend fun submitPost(createPostViewModel: CreatePostViewModel) {
-    createPostViewModel.createPost()
+suspend fun submitPost(createPostViewModel: CreatePostViewModel, context : Context) {
+    createPostViewModel.createPost(context)
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -380,7 +380,7 @@ fun SubmitPostButton(createPostViewModel: CreatePostViewModel) {
                                     openDialog.value = false
 
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        submitPost(createPostViewModel)
+                                        submitPost(createPostViewModel, context)
                                         resetPostScreen(createPostViewModel)
                                     }
 
@@ -1043,7 +1043,7 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImageUri.value = uri }
+        onResult = { uri -> selectedImageUri.value = uri ?: Uri.EMPTY }
     )
 
     Column(
@@ -1078,14 +1078,14 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
                     backgroundColor = colorResource(id = R.color.top_bar_bg2),
                     disabledBackgroundColor = colorResource(id = R.color.disabled_button).copy(alpha = 0.5f)
                 ),
-                enabled = selectedImageUri.value != null
+                enabled = selectedImageUri.value != Uri.EMPTY
             ) {
                 Text(text = "FORHÅNDSVIS BILLEDE", color = Color.White)
             }
 
-            if (selectedImageUri.value != null) {
+            if (selectedImageUri.value != Uri.EMPTY) {
                 OutlinedButton(
-                    onClick = { selectedImageUri.value = null },
+                    onClick = { selectedImageUri.value = Uri.EMPTY },
                     modifier = Modifier
                         .padding(start = 8.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -1103,7 +1103,7 @@ fun ImagePicker(createPostViewModel: CreatePostViewModel) {
         // and if the selectedImageUri is not null, since i don't
         // want the user to be able to be able to open dialog window
         // if no picture is chosen
-        if (showCustomDialog && selectedImageUri.value != null) {
+        if (showCustomDialog && selectedImageUri.value != Uri.EMPTY) {
             CustomAlertDialog({
                 showCustomDialog = !showCustomDialog
             }, {

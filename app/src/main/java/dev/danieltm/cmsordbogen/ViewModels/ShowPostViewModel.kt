@@ -36,6 +36,9 @@ class ShowPostViewModel : ViewModel() {
     private val _endDate = MutableStateFlow("")
     val endDate = _endDate.asStateFlow()
 
+    private val _image = MutableStateFlow("")
+    val image = _image.asStateFlow()
+
     //val sitesState = mutableListOf<String>()
 
 
@@ -47,6 +50,7 @@ class ShowPostViewModel : ViewModel() {
         _type.value = post.type
         _startDate.value = post.startDate
         _endDate.value = post.endDate
+        _image.value = post.image ?: ""
     }
 
     suspend fun deletePost(postId: Int){

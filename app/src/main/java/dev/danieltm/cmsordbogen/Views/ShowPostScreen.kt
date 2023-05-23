@@ -1,8 +1,10 @@
 package dev.danieltm.cmsordbogen.Views
 
-import android.app.DatePickerDialog
-import android.icu.util.Calendar
-import android.widget.DatePicker
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +16,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import dev.danieltm.cmsordbogen.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -25,13 +26,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import dev.danieltm.cmsordbogen.Models.PostModel
+import dev.danieltm.cmsordbogen.R
 import dev.danieltm.cmsordbogen.ViewModels.ShowPostViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 @Composable
 fun ShowPostScreen(showPostViewModel: ShowPostViewModel) {
@@ -44,6 +44,32 @@ fun ShowPostScreen(showPostViewModel: ShowPostViewModel) {
     val postStartDate by showPostViewModel.startDate.collectAsState()
     val postEndDate by showPostViewModel.endDate.collectAsState()
 
+    val postImage by showPostViewModel.image.collectAsState()
+
+    val conf = Bitmap.Config.ARGB_8888 // see other conf types
+
+    val bmp = Bitmap.createBitmap(
+        5,
+        5,
+        conf
+    ) // this creates a MUTABLE bitmap
+
+
+    var decodedImage: android.graphics.Bitmap = bmp
+
+    val context = LocalContext.current
+
+    try{
+        val imageBytes = Base64.decode(postImage, Base64.DEFAULT)
+        decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+    catch (error: java.lang.IllegalArgumentException){
+
+    }
+    catch(error: java.lang.NullPointerException){
+
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -51,8 +77,8 @@ fun ShowPostScreen(showPostViewModel: ShowPostViewModel) {
     ) {
         Box(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .background(colorResource(id = R.color.background_home))
         ) {
             Column(
@@ -170,6 +196,16 @@ fun ShowPostScreen(showPostViewModel: ShowPostViewModel) {
                         fontSize = 18.sp
                     )
                 )
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height((decodedImage.height / 5).dp)
+                ){
+                    AsyncImage(
+                        model = decodedImage,
+                        contentDescription = "PostImage",
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
 
                 Button(
                     modifier = Modifier
