@@ -26,7 +26,7 @@ class PostRepository(
     // Function to fetch ALL posts from the API
     override suspend fun getAllPosts(): List<PostModel> {
 
-        var get = client.get{ url("https://ascendance.hrmoller.com/api/contents") }
+        /*var get = client.get{ url("https://ascendance.hrmoller.com/api/contents") }
         var body = get.body<List<PostModel>>()
 
         body.forEach(){ post ->
@@ -35,10 +35,10 @@ class PostRepository(
             }
         }
 
-        return body
+        return body*/
 
         // Dummy data until i get access to an API
-        /*var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         var posts = listOf(
             PostModel(
                 id = 2,
@@ -89,8 +89,8 @@ class PostRepository(
                 //creationTime = LocalDate.now()
             )
 
-        )*/
-        //return posts
+        )
+        return posts
     }
 
     override suspend fun getRecentPosts() : List<PostModel> {
